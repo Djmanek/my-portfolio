@@ -29,13 +29,16 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await res.json();
 
@@ -58,9 +61,9 @@ export default function Login() {
 
   return (
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-white to-orange-50">
-      
+
       <div className="p-8 bg-white rounded-2xl shadow-lg w-80 space-y-5 border border-orange-100">
-        
+
         <h2 className="text-xl font-bold text-center text-[#FF6B00]">
           Admin Login
         </h2>
@@ -90,11 +93,10 @@ export default function Login() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-3 rounded-xl transition ${
-            loading
+          className={`w-full py-3 rounded-xl transition ${loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-[#FF6B00] text-white hover:scale-105"
-          }`}
+            }`}
         >
           {loading ? "Logging in..." : "Login"}
         </button>

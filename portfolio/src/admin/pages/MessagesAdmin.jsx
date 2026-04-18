@@ -7,7 +7,7 @@ export default function MessagesAdmin() {
   // 🔥 FETCH MESSAGES
   const fetchMessages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/messages");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/messages`);
       const data = await res.json();
       setMessages(data);
     } catch (err) {

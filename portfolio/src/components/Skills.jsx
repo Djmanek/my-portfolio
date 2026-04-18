@@ -5,7 +5,7 @@ export default function Skills() {
   const [skills, setSkills] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/skills")
+    fetch(`${import.meta.env.VITE_API_URL}/api/skills`)
       .then((res) => res.json())
       .then((data) => setSkills(data));
   }, []);

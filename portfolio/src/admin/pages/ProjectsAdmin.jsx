@@ -12,26 +12,24 @@ export default function ProjectsAdmin() {
     image: null,
   });
 
-  // ✅ ALWAYS GET FRESH TOKEN
+  const API = import.meta.env.VITE_API_URL;
+
+  // ✅ GET TOKEN SAFELY
   const getToken = () => {
     const token = localStorage.getItem("token");
-
-    // 🔥 Prevent "undefined" or invalid token
     if (!token || token === "undefined") return null;
-
     return token;
   };
 
   // 🔥 FETCH PROJECTS
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/projects");
+      const res = await fetch(`${API}/api/projects`);
 
       if (!res.ok) throw new Error("Failed to fetch");
 
       const data = await res.json();
       setProjects(data);
-
     } catch (err) {
       toast.error("Failed to fetch projects");
     }
@@ -68,7 +66,7 @@ export default function ProjectsAdmin() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/projects", {
+      const res = await fetch(`${API}/api/projects`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +90,6 @@ export default function ProjectsAdmin() {
       });
 
       fetchProjects();
-
     } catch (err) {
       toast.error(err.message);
     }
@@ -110,15 +107,12 @@ export default function ProjectsAdmin() {
     }
 
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/projects/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API}/api/projects/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
@@ -128,7 +122,6 @@ export default function ProjectsAdmin() {
 
       // ✅ Instant UI update
       setProjects((prev) => prev.filter((p) => p.id !== id));
-
     } catch (err) {
       toast.error(err.message);
     }
@@ -140,7 +133,6 @@ export default function ProjectsAdmin() {
 
       {/* FORM */}
       <div className="grid md:grid-cols-2 gap-4 mb-8 bg-white p-6 rounded-xl shadow border border-orange-100">
-
         <input
           placeholder="Title"
           value={form.title}

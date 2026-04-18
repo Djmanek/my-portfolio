@@ -4,7 +4,7 @@ export default function Resume() {
   const [resume, setResume] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/resume")
+    fetch(`${import.meta.env.VITE_API_URL}/api/resume`)
       .then((res) => res.json())
       .then((data) => setResume(data));
   }, []);
