@@ -88,16 +88,13 @@ export default function ResumeAdmin() {
       {resume && (
         <div className="mt-6 p-4 bg-white rounded-xl shadow border border-orange-100 flex justify-between items-center">
           <div className="flex gap-4">
-            {/* ✅ View opens PDF directly from backend */}
-            <a
-              href={`${API}/api/resume/file`}
-              target="_blank"
-              rel="noreferrer"
+            {/* ✅ Opens PDF without popup blocker */}
+            <button
+              onClick={() => window.location.href = `${API}/api/resume/file`}
               className="text-[#FF6B00] font-medium underline"
             >
               View Resume
-            </a>
-            {/* ✅ Download triggers file download */}
+            </button>
             <a
               href={`${API}/api/resume/file`}
               download={resume.filename || "resume.pdf"}

@@ -4,6 +4,7 @@ import { verifyToken } from "../middleware/auth.js";
 
 import {
   getProjects,
+  serveProjectImage,
   addProject,
   deleteProject,
 } from "../controllers/projectsController.js";
@@ -11,8 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/", getProjects);
-
-// 🔥 Protected routes
+router.get("/:id/image", serveProjectImage);   // ✅ serve image from DB
 router.post("/", verifyToken, upload.single("image"), addProject);
 router.delete("/:id", verifyToken, deleteProject);
 

@@ -3,6 +3,8 @@ import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+const API = import.meta.env.VITE_API_URL;
+
 export default function Contact() {
   const [form, setForm] = useState({
     name: "",
@@ -36,7 +38,7 @@ export default function Contact() {
     return newErrors;
   };
 
-  // 🔥 SUBMIT (CONNECTED TO BACKEND)
+  // 🔥 SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -50,7 +52,7 @@ export default function Contact() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/messages", {
+      const res = await fetch(`${API}/api/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,12 +66,7 @@ export default function Contact() {
 
       toast.success("Message sent successfully 🚀");
 
-      // Reset form
-      setForm({
-        name: "",
-        email: "",
-        message: "",
-      });
+      setForm({ name: "", email: "", message: "" });
 
     } catch (err) {
       toast.error("Failed to send message ❌");
@@ -120,32 +117,24 @@ export default function Contact() {
         </motion.div>
 
         {/* FORM */}
-        <motion.form
-          onSubmit={handleSubmit}
+        <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           className="bg-white/70 backdrop-blur-xl border border-orange-100 shadow-xl rounded-3xl p-8 space-y-5"
         >
+          <form onSubmit={handleSubmit} className="space-y-5">
           {/* NAME */}
           <div>
             <input
               type="text"
               placeholder="Your Name"
               className={`w-full p-3 rounded-xl border ${
-                errors.name
-                  ? "border-red-500"
-                  : "border-gray-200 focus:border-[#FF6B00]"
+                errors.name ? "border-red-500" : "border-gray-200 focus:border-[#FF6B00]"
               } outline-none`}
               value={form.name}
-              onChange={(e) =>
-                setForm({ ...form, name: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.name}
-              </p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
 
           {/* EMAIL */}
@@ -154,20 +143,12 @@ export default function Contact() {
               type="email"
               placeholder="Your Email"
               className={`w-full p-3 rounded-xl border ${
-                errors.email
-                  ? "border-red-500"
-                  : "border-gray-200 focus:border-[#FF6B00]"
+                errors.email ? "border-red-500" : "border-gray-200 focus:border-[#FF6B00]"
               } outline-none`}
               value={form.email}
-              onChange={(e) =>
-                setForm({ ...form, email: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email}
-              </p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
           {/* MESSAGE */}
@@ -176,20 +157,12 @@ export default function Contact() {
               rows="4"
               placeholder="Your Message"
               className={`w-full p-3 rounded-xl border ${
-                errors.message
-                  ? "border-red-500"
-                  : "border-gray-200 focus:border-[#FF6B00]"
+                errors.message ? "border-red-500" : "border-gray-200 focus:border-[#FF6B00]"
               } outline-none`}
               value={form.message}
-              onChange={(e) =>
-                setForm({ ...form, message: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
             />
-            {errors.message && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.message}
-              </p>
-            )}
+            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
           </div>
 
           {/* BUTTON */}
@@ -204,7 +177,8 @@ export default function Contact() {
           >
             {loading ? "Sending..." : "Send Message 🚀"}
           </button>
-        </motion.form>
+          </form>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 
+const API = import.meta.env.VITE_API_URL;
+
 export default function ProjectModal({ project, onClose }) {
   if (!project) return null;
 
@@ -26,9 +28,9 @@ export default function ProjectModal({ project, onClose }) {
         </h2>
 
         {/* 🖼️ IMAGE */}
-        {project.image ? (
+        {project.imagemime ? (
           <img
-            src={`http://localhost:5000${project.image}`}
+            src={`${API}/api/projects/${project.id}/image`}
             alt={project.title}
             className="mt-4 h-44 w-full object-cover rounded-xl"
           />
@@ -57,8 +59,6 @@ export default function ProjectModal({ project, onClose }) {
 
         {/* 🔗 ACTION BUTTONS */}
         <div className="mt-6 flex gap-4 flex-wrap">
-
-          {/* GitHub */}
           {project.github && (
             <a
               href={project.github}
@@ -69,8 +69,6 @@ export default function ProjectModal({ project, onClose }) {
               GitHub
             </a>
           )}
-
-          {/* Live */}
           {project.live && (
             <a
               href={project.live}
