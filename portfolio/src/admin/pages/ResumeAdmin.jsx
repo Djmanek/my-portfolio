@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+const API = import.meta.env.VITE_API_URL;
+
 export default function ResumeAdmin() {
   const [resume, setResume] = useState(null);
   const [file, setFile] = useState(null);
@@ -10,7 +12,7 @@ export default function ResumeAdmin() {
   // 🔥 FETCH CURRENT RESUME
   const fetchResume = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/resume");
+      const res = await fetch(`${API}/api/resume`);
       const data = await res.json();
       setResume(data);
     } catch (err) {
@@ -30,7 +32,7 @@ export default function ResumeAdmin() {
     formData.append("resume", file);
 
     try {
-      const res = await fetch("http://localhost:5000/api/resume", {
+      const res = await fetch(`${API}/api/resume`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -54,7 +56,7 @@ export default function ResumeAdmin() {
   // 🔥 DELETE RESUME
   const handleDelete = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/resume", {
+      const res = await fetch(`${API}/api/resume`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -102,7 +104,7 @@ export default function ResumeAdmin() {
         <div className="mt-6 p-4 bg-white rounded-xl shadow border border-orange-100 flex justify-between items-center">
 
           <a
-            href={`http://localhost:5000${resume.file}`}
+            href={`${API}${resume.file}`}
             target="_blank"
             className="text-[#FF6B00] font-medium underline"
           >

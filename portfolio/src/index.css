@@ -20,3 +20,13 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+.floating-buttons {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}

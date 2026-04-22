@@ -10,6 +10,9 @@ import { AnimatePresence, motion } from "framer-motion";
 // 🔥 LOADER
 import Loader from "./components/Loader";
 
+// 🔥 NAVBAR (ADD THIS)
+import Navbar from "./components/Navbar";
+
 // MAIN
 import Home from "./pages/Home";
 import TerminalOverlay from "./components/TerminalOverlay";
@@ -71,14 +74,18 @@ function App() {
         // 🔥 LOADER SCREEN
         <Loader key="loader" onFinish={() => setLoading(false)} />
       ) : (
-        // 🔥 MAIN APP WITH SMOOTH TRANSITION
+        // 🔥 MAIN APP
         <motion.div
           key="app"
-          initial={{ opacity: 0, filter: "blur(10px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
           <Router>
+
+            {/* ✅ NAVBAR (ALWAYS FIXED) */}
+            <Navbar />
+
             {/* 🔥 TOASTER */}
             <Toaster
               position="top-right"
@@ -91,24 +98,26 @@ function App() {
               }}
             />
 
-            {/* ROUTES */}
-            <Routes>
-              {/* Portfolio */}
-              <Route path="/" element={<Home />} />
+            {/* ✅ ROUTES WITH TOP SPACING */}
+            <div className="pt-20">
+              <Routes>
+                {/* Portfolio */}
+                <Route path="/" element={<Home />} />
 
-              {/* Login */}
-              <Route path="/login" element={<Login />} />
+                {/* Login */}
+                <Route path="/login" element={<Login />} />
 
-              {/* Admin */}
-              <Route
-                path="/admin/*"
-                element={
-                  <ProtectedRoute>
-                    <AdminPage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
+                {/* Admin */}
+                <Route
+                  path="/admin/*"
+                  element={
+                    <ProtectedRoute>
+                      <AdminPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
 
             {/* GLOBAL OVERLAYS */}
             <TerminalOverlay
@@ -120,7 +129,29 @@ function App() {
               isOpen={gameOpen}
               onClose={() => setGameOpen(false)}
             />
+
           </Router>
+
+          {/* 🔥 FLOATING BUTTONS — moved outside Router, inline styles to avoid filter/transform clipping */}
+          <div style={{ position: "fixed", bottom: "24px", right: "24px", display: "flex", flexDirection: "column", gap: "12px", zIndex: 99999 }}>
+            <div
+              onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true, key: "k" }))}
+              style={{ padding: "12px 20px", background: "#FF6B00", color: "white", borderRadius: "9999px", boxShadow: "0 4px 15px rgba(255,107,0,0.4)", cursor: "pointer", fontWeight: "600", userSelect: "none", transition: "transform 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+            >
+              Dev ⚡
+            </div>
+            <div
+              onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true, key: "g" }))}
+              style={{ padding: "12px 20px", background: "white", border: "1px solid #FFD0B0", color: "#FF6B00", borderRadius: "9999px", boxShadow: "0 4px 15px rgba(255,107,0,0.15)", cursor: "pointer", fontWeight: "600", userSelect: "none", transition: "transform 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+            >
+              Explore 🎮
+            </div>
+          </div>
+
         </motion.div>
       )}
     </AnimatePresence>
