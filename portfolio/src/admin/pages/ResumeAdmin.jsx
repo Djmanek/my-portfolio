@@ -104,7 +104,7 @@ export default function ResumeAdmin() {
         <div className="mt-6 p-4 bg-white rounded-xl shadow border border-orange-100 flex justify-between items-center">
 
           <a
-            href={`${API}${resume.file}`}
+            href={resume.file}
             target="_blank"
             className="text-[#FF6B00] font-medium underline"
           >

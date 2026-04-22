@@ -34,11 +34,11 @@ export const uploadResume = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // ✅ Upload buffer to Cloudinary as raw PDF
+    // ✅ Upload buffer to Cloudinary as image/pdf (viewable in browser)
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
-          resource_type: "raw",
+          resource_type: "image",
           folder: "resumes",
           public_id: "resume",
           overwrite: true,
@@ -76,7 +76,7 @@ export const uploadResume = async (req, res) => {
 export const deleteResume = async (req, res) => {
   try {
     // ✅ Also delete from Cloudinary
-    await cloudinary.uploader.destroy("resumes/resume", { resource_type: "raw" });
+    await cloudinary.uploader.destroy("resumes/resume", { resource_type: "image" });
 
     await pool.query("DELETE FROM public.resume");
 
