@@ -1,18 +1,10 @@
 import pool from "../config/db.js";
-import { v2 as cloudinary } from "cloudinary";
 
-// ✅ Cloudinary config
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// 🔥 GET RESUME
+// 🔥 GET RESUME INFO (no filedata — just metadata)
 export const getResume = async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM public.resume ORDER BY id DESC LIMIT 1"
+      "SELECT id, filename, mimetype FROM public.resume ORDER BY id DESC LIMIT 1"
     );
 
     if (!result.rows.length) {
@@ -27,42 +19,49 @@ export const getResume = async (req, res) => {
   }
 };
 
-// 🔥 UPLOAD RESUME
+// 🔥 SERVE RESUME FILE — streams PDF directly to browser
+export const serveResume = async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT filename, mimetype, filedata FROM public.resume ORDER BY id DESC LIMIT 1"
+    );
+
+    if (!result.rows.length) {
+      return res.status(404).json({ error: "No resume found" });
+    }
+
+    const { filename, mimetype, filedata } = result.rows[0];
+    const buffer = Buffer.from(filedata, "base64");
+
+    res.setHeader("Content-Type", mimetype || "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+    res.send(buffer);
+
+  } catch (err) {
+    console.error("❌ SERVE RESUME ERROR:", err.message);
+    res.status(500).json({ error: "Failed to serve resume", details: err.message });
+  }
+};
+
+// 🔥 UPLOAD RESUME — stores as base64 in PostgreSQL
 export const uploadResume = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // ✅ Upload as raw — gives a direct accessible PDF URL
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "raw",
-          folder: "resumes",
-          public_id: "resume.pdf",
-          overwrite: true,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      stream.end(req.file.buffer);
-    });
+    const { originalname, mimetype, buffer } = req.file;
+    const base64Data = buffer.toString("base64");
 
-    const fileUrl = uploadResult.secure_url;
-
-    // ✅ Keep only latest resume in DB
     await pool.query("DELETE FROM public.resume");
     await pool.query(
-      "INSERT INTO public.resume (file) VALUES ($1)",
-      [fileUrl]
+      "INSERT INTO public.resume (filename, mimetype, filedata) VALUES ($1, $2, $3)",
+      [originalname, mimetype, base64Data]
     );
 
     res.status(200).json({
       message: "Resume uploaded successfully ✅",
-      file: fileUrl,
+      filename: originalname,
     });
 
   } catch (err) {
@@ -74,11 +73,7 @@ export const uploadResume = async (req, res) => {
 // 🔥 DELETE RESUME
 export const deleteResume = async (req, res) => {
   try {
-    // ✅ Also delete from Cloudinary
-    await cloudinary.uploader.destroy("resumes/resume.pdf", { resource_type: "raw" });
-
     await pool.query("DELETE FROM public.resume");
-
     res.status(200).json({ message: "Resume deleted successfully 🗑️" });
 
   } catch (err) {

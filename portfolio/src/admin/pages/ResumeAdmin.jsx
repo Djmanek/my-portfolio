@@ -87,15 +87,25 @@ export default function ResumeAdmin() {
       {/* CURRENT RESUME */}
       {resume && (
         <div className="mt-6 p-4 bg-white rounded-xl shadow border border-orange-100 flex justify-between items-center">
-          {/* ✅ Direct Cloudinary raw URL — opens PDF directly */}
-          <a
-            href={resume.file}
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#FF6B00] font-medium underline"
-          >
-            View Resume
-          </a>
+          <div className="flex gap-4">
+            {/* ✅ View opens PDF directly from backend */}
+            <a
+              href={`${API}/api/resume/file`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#FF6B00] font-medium underline"
+            >
+              View Resume
+            </a>
+            {/* ✅ Download triggers file download */}
+            <a
+              href={`${API}/api/resume/file`}
+              download={resume.filename || "resume.pdf"}
+              className="text-gray-500 font-medium underline"
+            >
+              Download
+            </a>
+          </div>
           <button
             onClick={handleDelete}
             className="text-red-500 hover:scale-110 transition"
